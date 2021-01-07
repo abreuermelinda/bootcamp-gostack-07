@@ -6,6 +6,8 @@ import { MdAddShoppingCart } from 'react-icons/md';
 import { formatPrice } from '../../utils/format';
 import api from '../../services/api';
 
+import * as CartActions from '../../store/modules/cart/actions';
+
 import { ProductList } from './styles';
 
 /* class Home extends Component {
@@ -49,10 +51,7 @@ export default function Home() {
     const { products } = this.state; */
 
   const handleAddProduct = (product) => {
-    dispatch({
-      type: 'ADD_TO_CART',
-      product,
-    });
+    dispatch(CartActions.addToCart(product));
   };
   return (
     <ProductList>
