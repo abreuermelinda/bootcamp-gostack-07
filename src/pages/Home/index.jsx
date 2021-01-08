@@ -10,27 +10,8 @@ import * as CartActions from '../../store/modules/cart/actions';
 
 import { ProductList } from './styles';
 
-/* class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      products: [],
-    };
-  } */
 export default function Home() {
   const [products, setProducts] = useState([]);
-
-  /*  async componentDidMount() {
-    const response = await api.get('products');
-
-    const data = response.data.map((product) => ({
-      ...product,
-      priceFormatted: formatPrice(product.price),
-    }));
-
-    this.setState({ products: data });
-  }
- */
 
   const amount = useSelector((state) => state.cart.reduce((sumAmount, product) => {
     sumAmount[product.id] = product.amount;
@@ -54,8 +35,6 @@ export default function Home() {
 
     loadProducts();
   }, []);
-  /* render() {
-    const { products } = this.state; */
 
   const handleAddProduct = (id) => {
     dispatch(CartActions.addToCartRequest(id));
@@ -79,6 +58,3 @@ export default function Home() {
     </ProductList>
   );
 }
-/* } */
-
-/* export default connect()(Home); */
