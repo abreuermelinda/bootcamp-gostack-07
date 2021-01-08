@@ -57,8 +57,8 @@ export default function Home() {
   /* render() {
     const { products } = this.state; */
 
-  const handleAddProduct = (product) => {
-    dispatch(CartActions.addToCart(product));
+  const handleAddProduct = (id) => {
+    dispatch(CartActions.addToCartRequest(id));
   };
   return (
     <ProductList>
@@ -67,7 +67,7 @@ export default function Home() {
           <img src={product.image} alt={product.title} />
           <strong>{product.title}</strong>
           <span>{product.priceFormatted}</span>
-          <button type="button" onClick={() => handleAddProduct(product)}>
+          <button type="button" onClick={() => handleAddProduct(product.id)}>
             <div>
               <MdAddShoppingCart size={16} color="#FFF" />
               {amount[product.id] || 0}
