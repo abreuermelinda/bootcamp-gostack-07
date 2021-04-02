@@ -1,25 +1,39 @@
 /* eslint-disable max-len */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { MdRemoveCircleOutline, MdAddCircleOutline, MdDelete } from 'react-icons/md';
-import { bindActionCreators } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  MdRemoveCircleOutline,
+  MdAddCircleOutline,
+  MdDelete,
+} from 'react-icons/md';
+
 import { formatPrice } from '../../utils/format';
 
 import * as CartActions from '../../store/modules/cart/actions';
 
 import { Container, ProductTable, Total } from './styles';
 
-function Cart({
-  cart, total, removeFromCart, updateAmountRequest,
-}) {
+export default function Cart() {
+  const total = useSelector((state) => formatPrice(
+    state.cart.reduce((totalSum, product) => totalSum + product.price * product.amount, 0),
+  ));
+
+  const cart = useSelector((state) => state.cart.map((product) => ({
+    ...product,
+    subtotal: formatPrice(product.price * product.amount),
+  })));
+
+  const dispatch = useDispatch();
+
   function increment(product) {
-    updateAmountRequest(product.id, product.amount + 1);
+    dispatch(CartActions.updateAmountRequest(product.id, product.amount + 1));
   }
+
   function decrement(product) {
-    updateAmountRequest(product.id, product.amount - 1);
+    dispatch(CartActions.updateAmountRequest(product.id, product.amount - 1));
   }
+
   return (
     <Container>
       <ProductTable>
@@ -57,7 +71,10 @@ function Cart({
                 <strong>{product.subtotal}</strong>
               </td>
               <td>
-                <button type="button" onClick={() => removeFromCart(product.id)}>
+                <button
+                  type="button"
+                  onClick={() => dispatch(CartActions.removeFromCart(product.id))}
+                >
                   <MdDelete size={20} color="#7159c1" />
                 </button>
               </td>
@@ -77,31 +94,3 @@ function Cart({
     </Container>
   );
 }
-
-Cart.propTypes = {
-
-  cart: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      price: PropTypes.number.isRequired,
-      title: PropTypes.string.isRequired,
-      image: PropTypes.string.isRequired,
-      priceFormatted: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-  removeFromCart: PropTypes.func.isRequired,
-  updateAmountRequest: PropTypes.func.isRequired,
-  total: PropTypes.number.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-  cart: state.cart.map((product) => ({
-    ...product,
-    subtotal: formatPrice(product.price * product.amount),
-  })),
-  total: formatPrice(state.cart.reduce((total, product) => total + product.price * product.amount, 0)),
-});
-
-const mapDispatchToProps = (dispatch) => bindActionCreators(CartActions, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(Cart);
